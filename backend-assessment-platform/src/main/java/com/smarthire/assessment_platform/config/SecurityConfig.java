@@ -52,6 +52,8 @@ public class SecurityConfig {
 				 	req.requestMatchers("/auth/**").permitAll()
 				 	   .requestMatchers("/admin/**").hasRole("ADMIN")
 				 	   .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+				 	   .requestMatchers("/coordinator/exams/**").hasAnyRole("ADMIN","COORDINATOR")
+				 	   .requestMatchers("/coordinator/exams/**").authenticated()
 				 	   .anyRequest().authenticated())
 				 .build();
 				 

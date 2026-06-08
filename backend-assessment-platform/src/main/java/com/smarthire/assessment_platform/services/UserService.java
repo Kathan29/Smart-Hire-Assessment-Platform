@@ -1,11 +1,16 @@
 package com.smarthire.assessment_platform.services;
 
+import java.util.Optional;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.smarthire.assessment_platform.entities.Users;
 import com.smarthire.assessment_platform.exceptions.BadRequestException;
+import com.smarthire.assessment_platform.exceptions.ResourceNotFoundException;
 import com.smarthire.assessment_platform.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,4 +29,12 @@ public class UserService {
 		return userRepo.save(user);
 	}
 	
+	
+	public Users getCurrentUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username = auth.getName();
+		
+		return Optional.ofNullable(userRepo.findByUsername(username))
+				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+	}
 }
