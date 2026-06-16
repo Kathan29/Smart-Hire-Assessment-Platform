@@ -89,6 +89,12 @@ public class ExamService {
 		    throw new BadRequestException("End time must be after start time");
 		}
 		
+		if(existingExam.getStatus() == ExamStatus.PUBLISHED){
+		    throw new BadRequestException(
+		        "Published exam cannot be modified"
+		    );
+		}
+		
 		examMapper.updateEntityFromDTO(examRequest, existingExam);
 		
 		return examMapper.toDTO(existingExam);
@@ -111,17 +117,17 @@ public class ExamService {
 		
 		Exams existingExam = examRepo.findById(examId).orElseThrow(() -> new ResourceNotFoundException("Exam doesnt exist"));
 		
+		validateExamOwnership(user, existingExam);
+		
 		if(existingExam.getStatus()==ExamStatus.PUBLISHED) {
 			throw new BadRequestException("Exam already published");
 		}
-		
-		validateExamOwnership(user, existingExam);
 			
 		existingExam.setStatus(ExamStatus.PUBLISHED);
 	}
 	
 	private void validateExamOwnership(Users user,Exams exam) {
-		if(user.getRoles() != UserRoles.ADMIN  &&
+		if(!UserRoles.ADMIN.equals(user.getRoles()) &&
 				!(exam.getCreatedBy().getId().equals(user.getId()))) {
 			throw new ForbiddenException("You are not authorized to access this exam");
 		}
