@@ -1,12 +1,7 @@
 package com.smarthire.assessment_platform.entities;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.smarthire.assessment_platform.enums.SectionType;
 
-import com.smarthire.assessment_platform.enums.ExamStatus;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,41 +10,37 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "exams")
+@Table(name = "sections", uniqueConstraints = {
+        @UniqueConstraint(
+                columnNames = {
+                    "exam_id",
+                    "order_no"
+                }
+            )
+        })
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Exams {
-
+public class Sections {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(nullable=false)
-	private String title;
-	
-	private String description;
-	
+	private String sectionName;
 	private Integer duration;
-	
-	private LocalDateTime startTime;
-	
-	private LocalDateTime endTime;
+	private Integer orderNo;
 	
 	@Enumerated(EnumType.STRING)
-	private ExamStatus status;
+	private SectionType sectionType;
 	
 	@ManyToOne
-	@JoinColumn(name = "created_by")
-	private Users createdBy;
-	
-	@OneToMany(mappedBy = "exam",cascade = CascadeType.ALL,orphanRemoval = true)
-	private List<Sections> sections;
+	@JoinColumn(name = "exam_id")
+	private Exams exam;
 }

@@ -126,7 +126,7 @@ public class ExamService {
 		existingExam.setStatus(ExamStatus.PUBLISHED);
 	}
 	
-	private void validateExamOwnership(Users user,Exams exam) {
+	public void validateExamOwnership(Users user,Exams exam) {
 		if(!UserRoles.ADMIN.equals(user.getRoles()) &&
 				!(exam.getCreatedBy().getId().equals(user.getId()))) {
 			throw new ForbiddenException("You are not authorized to access this exam");
