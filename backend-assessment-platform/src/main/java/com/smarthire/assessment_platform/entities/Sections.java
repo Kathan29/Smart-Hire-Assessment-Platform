@@ -1,7 +1,10 @@
 package com.smarthire.assessment_platform.entities;
 
+import java.util.List;
+
 import com.smarthire.assessment_platform.enums.SectionType;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -43,4 +47,9 @@ public class Sections {
 	@ManyToOne
 	@JoinColumn(name = "exam_id")
 	private Exams exam;
+	
+	@OneToMany(mappedBy = "section",cascade = CascadeType.ALL,orphanRemoval = true)
+	private List<McqQuestion> mcqQuestions;
+	
+	private Long totalMarks;
 }
